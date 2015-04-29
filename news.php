@@ -461,9 +461,13 @@ $num_articles = mysql_num_rows($result);
 														responsiveVoice.speak(abc,responsiveVoice.setDefaultVoice());
 														//alert(abc);
 													}
+													p2 = function(){
+														responsiveVoice.cancel();
+													}
 												</script>
 					
 												<button onclick=pl<?php echo $i;?>()>Play</button>
+												<button onclick=p2()>Stop</button>
 												<?php
 													echo'</div>
 										</div>
