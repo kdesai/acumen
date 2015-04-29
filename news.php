@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
 <?php
-include("..\..\W3C_lib\LIB_http.php");
-include("..\..\W3C_lib\LIB_parse.php");
-include("..\config\config.php");
+//include("..\..\W3C_lib\LIB_http.php");
+//include("..\..\W3C_lib\LIB_parse.php");
+//include("..\config\config.php");
 set_time_limit(6000000); 
-//$link = mysql_connect('140.112.233.123', 'root', 'lapy110');
-$link = mysql_connect('127.0.0.1', 'root', 'lapy110');
+$link = mysql_connect('140.112.233.123', 'root', 'lapy110');
+//$link = mysql_connect('127.0.0.1', 'root', 'lapy110');
 mysql_query("SET NAMES utf8");
 mysql_select_db("finance_ms",$link);
 
