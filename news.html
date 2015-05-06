@@ -288,11 +288,11 @@
                         </div>
                     </div>
                     <!-- search form -->
-                    <form action="#" method="get" class="sidebar-form">
+                    <form onsubmit="getNewsArticles(); return false;" class=sidebar-form>
                         <div class="input-group">
-                            <input type="text" name="q" class="form-control" placeholder="Search..."/>
+                            <input type="text" id="ticker_input" class="form-control" placeholder="Search Ticker..."/>
                             <span class="input-group-btn">
-                                <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                                <button type='submit' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
                             </span>
                         </div>
                     </form>
@@ -543,10 +543,18 @@
                     //Remove event from text input
                     $("#new-event").val("");
                 });
-				
-				function getNewsArticles(t, m, y) {
+            });
+			
+			function getNewsArticles() {
+					t = $("#ticker_input").val();
+					m = '08';
+					y = '2014';
+					console.log(t);
+					
+					$("#articles").children().remove();
+					
 					$.ajax({
-						url: "getNewsArticles.php",
+						url: "http://140.112.233.123/Finance/webpages/AdminLTE/getNewsArticles.php",
 						type: "GET",
 						data: ({ticker : t, month : m, year : y}),
 						dataType: "json",
@@ -617,9 +625,6 @@
 						}
 					});
 				}
-				
-				getNewsArticles("AAPL:US","08","2014");
-            });
         </script>
     </body>
 </html>
