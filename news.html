@@ -70,7 +70,7 @@
                     <!-- sidebar menu: : style can be found in sidebar.less -->
                     <ul class="sidebar-menu">
                         <li class="active">
-                            <a href="index_lapy.php">
+                            <a href="index_lapy.html">
                                 <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                             </a>
                         </li>
@@ -308,7 +308,7 @@
 					$("#articles").children().remove();
 					
 					$.ajax({
-						url: "http://140.112.233.123/Finance/webpages/AdminLTE/getNewsArticles.php",
+						url: "http://websys3.stern.nyu.edu/websysS15GB/websysS15GB4/AdminLTE/getNewsArticles.php",
 						type: "GET",
 						data: ({ticker : t, month : m, year : y}),
 						dataType: "json",
