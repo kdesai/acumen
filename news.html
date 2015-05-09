@@ -129,7 +129,18 @@
 		<script src="js/responsiveVoice.js" type="text/javascript"></script>
 		<!-- Page specific script -->
         <script type="text/javascript">
-            $(function() {
+		// Get URL Parameters function
+			$.urlParam = function(name){
+				var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+				if (results==null){
+				   return null;
+				}
+				else{
+				   return results[1] || 0;
+				}
+			}
+		
+            $(document).ready(function() {
 
                 /* initialize the external events
                  -----------------------------------------------------------------*/
@@ -287,13 +298,16 @@
                     //Remove event from text input
                     $("#new-event").val("");
                 });
+				
+				getNewsArticles();
             });
 			
 			function getNewsArticles() {
 					var t,m,y;
 					var moment = $("#calendar").fullCalendar('getDate');
-					
+			
 					t = $("#ticker_input").val();
+					if (t == ""){t = $.urlParam("TICKER");}
 					
 					var month = moment.getMonth()+1;
 					if (month < 10) {
@@ -379,8 +393,6 @@
 						}
 					});
 				}
-				
-				
         </script>
     </body>
 </html>
