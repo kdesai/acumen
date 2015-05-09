@@ -1,31 +1,4 @@
 <!DOCTYPE html>
-<?php
-//include("..\..\W3C_lib\LIB_http.php");
-//include("..\..\W3C_lib\LIB_parse.php");
-//include("..\config\config.php");
-set_time_limit(6000000); 
-//$link = mysql_connect('140.112.233.123', 'root', 'lapy110');
-//$link = mysql_connect('127.0.0.1', 'root', 'lapy110');
-$link = mysql_connect('127.0.0.1', 'websysS15GB4', 'websysS15GB4!!');
-mysql_query("SET NAMES utf8");
-mysql_select_db("websysS15GB4",$link);
-
-$TICKER = array_key_exists('TICKER',$_GET)?$_GET['TICKER']:"AMZN:US";
-$query = "SELECT * FROM  `testcount` WHERE MAJOR_TICKER = '$TICKER';";
-$result =mysql_query($query,$link);
-
-if( $result && mysql_num_rows($result)==0 )
-{
-	echo "TICKER <b>\" $TICKER\"</b> is not found.</br>";
-	return;
-}
-
-$query = "SELECT * FROM  `companyb4_unique` WHERE MAJOR_TICKER = '".$TICKER."';";
-$result = mysql_query($query);     
-$row = mysql_fetch_array($result);
-$CompanyName = $row['CompanyName'];
-?>
-
 <html>
     <head>
         <meta charset="UTF-8">
@@ -77,210 +50,110 @@ $CompanyName = $row['CompanyName'];
       		google.load('visualization', '1', {'packages':['motionchart']});
       		google.setOnLoadCallback(drawCharts);
 			
+			var TICKER;
+			var CompanyName;
 			function drawCharts()
 			{
 				drawChartSI();
-				drawChart6();
 				drawChart2();
 				drawChartPie();
 			}
 			
-			function drawChartSI(  ) {//draw industry
-				<?php
-
-
-				$TICKER = array_key_exists('TICKER',$_GET)?$_GET['TICKER']:"AAPL:US";
-
-				$query = "SELECT * FROM  `testcount` WHERE MAJOR_TICKER = '$TICKER';";
-				$result = mysql_query($query,$link);
-				$row = mysql_fetch_array($result);
-
-				$RELATED_TICKERS = json_decode($row['RELATED_COMPANIES_JSON'],true);
-				$CORELATION = json_decode($row['CORELATION'],true);
-
-				echo "var data = google.visualization.arrayToDataTable([\n";
-				echo "['TICKER', 'Sub-Industrial Categories', 'Corelation', 'Sub-Industrial Categories','Exposure'],\n";
-
-				$industry_cate = array();
-				$industry_key = array();
-
-				$NUMS_OF_RELATED_COMPANY = 0;
-				for($i=1;$i<=9;$i++){
-
-					$query = "SELECT MAJOR_TICKER,INDUSTRY,SECTOR,SUB_INDUSTRY,CompanyName FROM  `companyb4_unique` WHERE MAJOR_TICKER = '".$RELATED_TICKERS[$i]['symbol']."';";
-					$result = mysql_query($query);
-
-					if(mysql_num_rows($result) == 0)
+			function drawChartSI(  ) 
+			{
+				$.ajax(
 					{
-
-					}
-					else if(mysql_num_rows($result) == 1)
-					{	
-						$NUMS_OF_RELATED_COMPANY++;
-						$row = mysql_fetch_array($result);
-
-						$key = array_search($row['SUB_INDUSTRY'], $industry_cate);
-						if($key === FALSE)
+						url: "chart_SI.php",
+						type: "GET",
+						data: ({TICKER : "AMZN:US" }),
+						dataType: "json",
+						success: function(data)
 						{
-							$industry_cate[] = $row['SUB_INDUSTRY'];
-							//print_r($industry_cate);
-							$key = array_search($row['SUB_INDUSTRY'], $industry_cate);
-							//print_r($industry_cate);
-							//print_r($CORELATION);
+							//alert(data[1]);
+							var dataD = google.visualization.arrayToDataTable(data[0]);
+							TICKER = data[2];
+							CompanyName = data[3];
+
+							var options = {
+								title: 'Correlation',
+								hAxis: {title: 'Industrial Categories Index'},
+								vAxis: {title: 'Corelation with AMZN:US (%) '},
+								bubble: {textStyle: {fontSize: 11}}
+							};
+
+							var chart = new google.visualization.BubbleChart(document.getElementById('chart_div'));
+							chart.draw(dataD, options);
+							
+							
+							var data2 = new google.visualization.DataTable(data[1]);
+							var chart2 = new google.visualization.MotionChart(document.getElementById('chart_div2'));
+							chart2.draw(data2, {width: 500, height:500});
 						}
-						$industry_key[] = $key;
-
-						if($RELATED_TICKERS[$i]['counts']/$RELATED_TICKERS[0]['counts'] ==1)
-							$modified_corelation = 1;
-						else if ($RELATED_TICKERS[$i]['counts'] == 0)
-							$modified_corelation = 0;
-						else{
-
-							$modified_corelation = 1/( 1+ exp(-1/(1-$RELATED_TICKERS[$i]['counts']/$RELATED_TICKERS[0]['counts'])));
-							$modified_corelation = $RELATED_TICKERS[$i]['counts']/$RELATED_TICKERS[0]['counts'];
-						}
-
-						//echo "['".$RELATED_TICKERS[$i]['symbol']."',".($key+2).",".(100*$modified_corelation).",'$row[SUB_INDUSTRY]',".($RELATED_TICKERS[$i]['counts'])."]";
-						//echo "['".$row['CompanyName'].'('.$RELATED_TICKERS[$i]['symbol'].")',".($key+2).",".(100*$modified_corelation).",'$row[SUB_INDUSTRY]',".($RELATED_TICKERS[$i]['counts'])."]";
-						echo "['".$row['CompanyName']."(".$row['MAJOR_TICKER'].")"."',".($key+1).",".(100*$modified_corelation).",'$row[SUB_INDUSTRY]',".($RELATED_TICKERS[$i]['counts'])."]";
-
-						if($i<9)
-							echo ",\n";
-					}
-				}
-				echo "\n]);\n";
-
-				?>
-
-					var options = {
-				  	title: 'Correlation',
-				  	hAxis: {title: 'Industrial Categories Index'},
-				  	vAxis: {title: 'Corelation with <?php echo $TICKER; ?> (%) '},
-				  	bubble: {textStyle: {fontSize: 11}}
-				};
-
-				var chart = new google.visualization.BubbleChart(document.getElementById('chart_div'));
-				chart.draw(data, options);
+					});
 			}
 
 			function drawChart6()
 			{
-        		var data = google.visualization.arrayToDataTable([    
-         		<?php
-				echo "['Month', '$row[SECTOR]', '$row[INDUSTRY]', '$row[SUB_INDUSTRY]', '$CompanyName'],\n";   
-				$c =0;  
-				for($y=2011;$y<=2013;$y++)
-				{
-
-					for($m=1;$m<=12;$m++)
+				$.ajax(
 					{
-						$query2 = "SELECT SUM(`$m`) FROM news_info_".($y)." WHERE SECTOR='$row[SECTOR]';";//sector
-						$query3 = "SELECT SUM(`$m`) FROM news_info_".($y)." WHERE INDUSTRY='$row[INDUSTRY]';";//industry
-						$query4 = "SELECT SUM(`$m`) FROM news_info_".($y)." WHERE SUB_INDUSTRY='$row[SUB_INDUSTRY]';";//sub-industry
-						//echo $query2."\n";
-						//$query5 = "SELECT * FROM `news_".($y).(floor($m/10)).($m%10)."` WHERE `RELTEAD_TICKERS_JSON` LIKE '%".$TICKER."%';";
-						//echo $query5;
+						url: "chart_6.php",
+						type: "GET",
+						data: ({TICKER : "AMZN:US" }),
+						dataType: "json",
+						success: function(data)
+						{
+							//alert(data[1]);
+							var dataD = google.visualization.arrayToDataTable(data);
 
-						$row2 = mysql_fetch_array(mysql_query($query2));
-						$row3 = mysql_fetch_array(mysql_query($query3));
-						$row4 = mysql_fetch_array(mysql_query($query4));
-						//$result5 = mysql_query($query5);
 
-						echo "['".($y)."-".(floor($m/10)).($m%10)."',".($row2["SUM(`$m`)"]).",".($row3["SUM(`$m`)"]).",".($row4["SUM(`$m`)"]).",".($CORELATION[0]['CORELATED_NUMBER'][$c++])."]";
-
-						if($y != 2013 || $m !=12)
-							echo ",\n";
-					}
-				}
-				echo "]);";
-				?>
-
-				var options = {
-				  title: 'News Counts of SECTOR, INDUSTRY and SUB-INDUSTRY belonging to <?php echo $TICKER;?>',
-				  hAxis: {title: 'Month',  titleTextStyle: {color: '#333'}},
-				  vAxis: {minValue: 0}
-				};
-
-				var chart = new google.visualization.AreaChart(document.getElementById('chart_div6'));
-				chart.draw(data, options);
+							var options = {
+								title: 'Correlation',
+								hAxis: {title: 'Industrial Categories Index'},
+								vAxis: {title: 'Corelation with AMZN:US (%) '},
+								bubble: {textStyle: {fontSize: 11}}
+							};
+							
+							var options = {
+							  title: 'News Counts of SECTOR, INDUSTRY and SUB-INDUSTRY belonging to '+TICKER,
+							  hAxis: {title: 'Month',  titleTextStyle: {color: '#333'}},
+							  vAxis: {minValue: 0}
+							};
+							var chart = new google.visualization.AreaChart(document.getElementById('chart_div6'));
+							chart.draw(data, options);
+						}
+					});
 		  	}
 			
-			google.load("visualization", "1", {packages:["corechart"]});
-			google.setOnLoadCallback(drawChart);
+			function drawChartPie() 
+			{
 				
-			function drawChartPie() {
-				var data = google.visualization.arrayToDataTable([
-				<?php
-
-				$query3 = "select distinct(SUB_INDUSTRY) from companyb4_unique where INDUSTRY ='$row[INDUSTRY]';";
-				$result3 =mysql_query($query3,$link);
-				$ii=0;
-				echo "['SUB_INDUSTRY','# of News'],\n";
-				for($i=0;$i<mysql_num_rows($result3);$i++)
+				$.ajax(
 				{
-					$row3 = mysql_fetch_array($result3);
-					$query  = "SELECT * FROM `news_info_".(2013)."` WHERE SUB_INDUSTRY = '$row3[SUB_INDUSTRY]';";
+					url: "chart_pie.php",
+					type: "GET",
+					data: ({TICKER : "AMZN:US" }),
+					dataType: "json",
+					success: function(data)
+					{
+						//alert(data[1][1]);
+						var data_draw = google.visualization.arrayToDataTable(data[0]);
 
-					//echo $query;
-					$result = mysql_query($query);								
-					$row2 = mysql_fetch_array($result);
+						var options = {
+						  title: 'News Distribution in '+data[1][1]+' INDUSTRY',
+						  pieHole: 0.4,
+						  //slices: {  parseInt(data[1][0]) : {offset: 0.2}, },
+						};
 
-					if($row3['SUB_INDUSTRY'] == $row['SUB_INDUSTRY'])
-						$ii=$i;
-
-					$S = 0;
-					for($j=1;$j<=12;$j++)
-						$S+= $row2[strval($j)];
-
-					echo "['$row2[SUB_INDUSTRY]',$S]";
-					if($i<mysql_num_rows($result3)-1)
-						echo ",\n";
-				}
-							echo "]);";
-
-				?>	
-				var options = {
-				  title: 'News Distribution in '+'<?php echo $row['INDUSTRY'];?> INDUSTRY',
-				  pieHole: 0.4,
-				  slices: {  <?php echo $ii;?>: {offset: 0.2},
-
-				  },
-				};
-
-				var chart = new google.visualization.PieChart(document.getElementById('chart_div5'));
-				chart.draw(data, options);
+						var chart = new google.visualization.PieChart(document.getElementById('chart_div5'));
+						chart.draw(data_draw, options);
+					}			
+				});
 			}
-					
-					
+				
+							
 			function drawChart2() 
 			{
-				var data = new google.visualization.DataTable();
-				data.addColumn('string', 'TICKER');
-				data.addColumn('date', 'Date');
-				data.addColumn('number', 'Cate index');
-				data.addColumn('number', 'Corelation');
-				data.addColumn('string', 'Cate');
 
-				<?php
-				echo "data.addRows([  \n";
-
-				for($i=1;$i<=5;$i++)
-				{
-					$key = $industry_key[$i];
-					for($j=0; $j <= 35 ; $j ++ )
-					{
-						echo "['".$RELATED_TICKERS[$i]['symbol']."',new Date (".(2011+($j/12)).",".(($j)%12).",0),".($key).",".($CORELATION[$i]['COEF'][$j]).",'".$industry_cate[$key]."']";
-
-						if($i != 5 || $j != 35)
-							echo ",\n";
-					}		
-				}
-
-				echo "]);";	
-				?>
-
-				var chart = new google.visualization.MotionChart(document.getElementById('chart_div2'));
-				chart.draw(data, {width: 500, height:500});
 			}		
 		</script>
     </head>
@@ -564,7 +437,7 @@ $CompanyName = $row['CompanyName'];
                             <img src="img/Apple-Logo.png" class="img-circle" alt="User Image" />
                         </div>
                         <div class="pull-left info">
-                            <p><?php echo $CompanyName."(".$TICKER.")"; ?></p>
+                            <p><script>document.write(CompanyName+"("+TICKER+")");</script></p>
 
                             <a href="#"><i class="fa fa-circle text-success"></i>Market Close</a>
                         </div>
@@ -587,7 +460,7 @@ $CompanyName = $row['CompanyName'];
                             </a>
                         </li>
 						<li>
-							<a href="news.php?TICKER=<?php echo $TICKER;?>">
+							<script>document.write("<a href=\"news.php?TICKER="+TICKER+"\");</script>
 								<i class="fa fa-tasks"></i> <span>News</span>
 							</a>
 						</li>
@@ -1222,128 +1095,124 @@ $CompanyName = $row['CompanyName'];
 	
 	
 		<script type="text/javascript">
-		<?php
-				echo "var links = [\n";
+			var LINKS;
+			var Major_node;
+			var TICKER;
+			var RELATED_TICKERS;
+			$.ajax(
+			{
+				url: "chart_links.php",
+				type: "GET",
+				data: ({TICKER : "AMZN:US" }),
+				dataType: "json",
+				success: function(data)
+				{
+					
+					LINKS = data[0];
+					TICKER = data[1][0];
+					RELATED_TICKERS = data[2];
+					//alert("SUCCESS");
+					var nodes = {};
 
-				for($i=1;$i<=9;$i++){
+					// Compute the distinct nodes from the links.
+					LINKS.forEach(function(link) {
+					  link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
+					  link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
+					});
 
-					$query = "SELECT * FROM  `testcount` WHERE MAJOR_TICKER = '".$RELATED_TICKERS[$i]['symbol']."';";
-					//echo $query;
-					$result = mysql_query($query,$link);
-					$row = mysql_fetch_array($result);
+					var width = 800,
+						height = 300;
+					if(window.innerWidth<800)
+						width=300;
+					var force = d3.layout.force()
+						.nodes(d3.values(nodes))
+						.links(LINKS)
+						.size([width, height])
+						.linkDistance(40)
+						.charge(-300)
+						.on("tick", tick)
+						.start();
+					var wid = document.getElementById("chart_div3").clientWidth;
+					var svg = d3.select("#chart_div3").append("svg")
+						.attr("width", wid)
+						.attr("height", window.innerHeight);
 
-					$RELATED_TICKERS_2 = json_decode($row['RELATED_COMPANIES_JSON'],true);
-					echo '{source: "'.$RELATED_TICKERS[0]['symbol'].'", target: "'.$RELATED_TICKERS[$i]['symbol'].'", type: "licensing"}'.",\n";
+					var link = svg.selectAll(".link")
+						.data(force.links())
+					  .enter().append("line")
+						.attr("class", "link");
 
-					for($j=1;$j<=9 && $j<sizeof($RELATED_TICKERS_2);$j++)
+					var node = svg.selectAll(".node")
+						.data(force.nodes())
+					  .enter().append("g")
+						.attr("class", "node")
+						.attr("id",function(d) { return d.name; })
+						.on("mouseover", mouseover)
+						.on("mouseout", mouseout)
+						.call(force.drag);
+
+					node.append("circle")
+						.attr("r", 8);
+
+					node.append("text")
+						.attr("x", -20)
+						.attr("y", -10)
+						.text(function(d) { return d.name; });
+
+					var Major_node = svg.selectAll(".node#"+TICKER.replace(":","\\\:")+" circle");
+					Major_node.attr('r',22).style('fill','#39DF3B');
+
+
+					for(i=1;i<=9;i++)
+					{
+						var Major_node = svg.selectAll(".node#"+RELATED_TICKERS[i].replace(":","\\\:")+" circle");
+						Major_node.attr('r',10).style('fill','#ff33cc');
+					}
+					
+					function tick() 
+					{
+					  link
+						  .attr("x1", function(d) { return d.source.x; })
+						  .attr("y1", function(d) { return d.source.y; })
+						  .attr("x2", function(d) { return d.target.x; })
+						  .attr("y2", function(d) { return d.target.y; });
+
+					  node
+						  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+					}
+
+					function mouseover() {
+					  d3.select(this).select("circle").transition()
+						  .duration(0)
+						  .attr("r", 16);
+					}
+
+					function mouseout() 
 					{
 
-						 echo '{source: "'.$RELATED_TICKERS[$i]['symbol'].'", target: "'.$RELATED_TICKERS_2[$j]['symbol'].'", type: "licensing"}';
+					  d3.select(this).select("circle").transition()
+						  .duration(0)
+						  .attr("r", 8);
 
-						 if($i != 9 || $j != 9)
-							echo ",\n";		
+						var Major_node = svg.selectAll(".node#"+TICKER+" circle")
+						Major_node.attr('r',22);
+
+						for(i=1;i<=9;i++)
+						{
+							var Major_node = svg.selectAll(".node#"+RELATED_TICKERS[$i].replace(":","\\\:")+' circle');
+							Major_node.attr('r',10).style('fill','#ff33cc');
+							//echo $query;
+						}
+
 					}
 				}
-				echo '];';
-
-				?>
+			});		
+			
+			
+	
 				// http://blog.thomsonreuters.com/index.php/mobile-patent-suits-graphic-of-the-day/
 
-				var nodes = {};
-
-				// Compute the distinct nodes from the links.
-				links.forEach(function(link) {
-				  link.source = nodes[link.source] || (nodes[link.source] = {name: link.source});
-				  link.target = nodes[link.target] || (nodes[link.target] = {name: link.target});
-				});
-
-				var width = 800,
-					height = 300;
-				if(window.innerWidth<800)
-					width=300;
-				var force = d3.layout.force()
-					.nodes(d3.values(nodes))
-					.links(links)
-					.size([width, height])
-					.linkDistance(40)
-					.charge(-300)
-					.on("tick", tick)
-					.start();
-				var wid = document.getElementById("chart_div3").clientWidth;
-				var svg = d3.select("#chart_div3").append("svg")
-					.attr("width", wid)
-					.attr("height", window.innerHeight);
-
-				var link = svg.selectAll(".link")
-					.data(force.links())
-				  .enter().append("line")
-					.attr("class", "link");
-
-				var node = svg.selectAll(".node")
-					.data(force.nodes())
-				  .enter().append("g")
-					.attr("class", "node")
-					.attr("id",function(d) { return d.name; })
-					.on("mouseover", mouseover)
-					.on("mouseout", mouseout)
-					.call(force.drag);
-
-				node.append("circle")
-					.attr("r", 8);
-
-				node.append("text")
-					.attr("x", -20)
-					.attr("y", -10)
-					.text(function(d) { return d.name; });
-
-
-
-				var Major_node = svg.selectAll(".node#"+<?php echo '"'.str_replace(':', '\\\:', $TICKER).'"'; ?>+" circle");
-				Major_node.attr('r',22).style('fill','#39DF3B');
-
-				<?php
-					for($i=1;$i<=9;$i++){
-
-					echo 'var Major_node = svg.selectAll(".node#'.str_replace(':', '\\\:', $RELATED_TICKERS[$i]['symbol']).' circle");';
-					echo "Major_node.attr('r',10).style('fill','#ff33cc');\n";
-					//echo $query;
-					}
-				?>
-				function tick() {
-				  link
-					  .attr("x1", function(d) { return d.source.x; })
-					  .attr("y1", function(d) { return d.source.y; })
-					  .attr("x2", function(d) { return d.target.x; })
-					  .attr("y2", function(d) { return d.target.y; });
-
-				  node
-					  .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-				}
-
-				function mouseover() {
-				  d3.select(this).select("circle").transition()
-					  .duration(0)
-					  .attr("r", 16);
-				}
-
-				function mouseout() {
-
-				  d3.select(this).select("circle").transition()
-					  .duration(0)
-					  .attr("r", 8);
-
-					var Major_node = svg.selectAll(".node#"+<?php echo '"'.str_replace(':', '\\\:', $TICKER).'"'; ?>+" circle")
-					Major_node.attr('r',22);
-
-					<?php
-					for($i=1;$i<=9;$i++){
-
-					echo 'var Major_node = svg.selectAll(".node#'.str_replace(':', '\\\:', $RELATED_TICKERS[$i]['symbol']).' circle");';
-					echo "Major_node.attr('r',10).style('fill','#ff33cc');\n";
-					//echo $query;
-					}
-					?>
-				}
+				
 		</script>
     </body>
 </html>
