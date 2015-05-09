@@ -64,7 +64,7 @@
 			{
 				$.ajax(
 					{
-						url: "chart_SI.php",
+						url: "http://websys3.stern.nyu.edu/websysS15/websysS15GB4/AdminLTE/chart_SI.php",
 						type: "GET",
 						data: ({TICKER : "AMZN:US" }),
 						dataType: "json",
@@ -97,7 +97,7 @@
 			{
 				$.ajax(
 					{
-						url: "chart_6.php",
+						url: "http://websys3.stern.nyu.edu/websysS15/websysS15GB4/AdminLTE/chart_6.php",
 						type: "GET",
 						data: ({TICKER : "AMZN:US" }),
 						dataType: "json",
@@ -130,7 +130,7 @@
 				
 				$.ajax(
 				{
-					url: "chart_pie.php",
+					url: "http://websys3.stern.nyu.edu/websysS15/websysS15GB4/AdminLTE/chart_pie.php",
 					type: "GET",
 					data: ({TICKER : "AMZN:US" }),
 					dataType: "json",
@@ -223,16 +223,11 @@
             <aside class="right-side">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    <h1>
-                        Dashboard
-                        <small>Control panel</small>
-                    </h1>
-					<!--
+                    <h1>Dashboard</h1>
                     <ol class="breadcrumb">
                         <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
                         <li class="active">Dashboard</li>
                     </ol>
-					-->
                 </section>
 
                 <!-- Main content -->
@@ -762,7 +757,7 @@
 			var RELATED_TICKERS;
 			$.ajax(
 			{
-				url: "chart_links.php",
+				url: "http://websys3.stern.nyu.edu/websysS15/websysS15GB4/AdminLTE/chart_links.php",
 				type: "GET",
 				data: ({TICKER : "AMZN:US" }),
 				dataType: "json",
@@ -867,13 +862,7 @@
 
 					}
 				}
-			});		
-			
-			
-	
-				// http://blog.thomsonreuters.com/index.php/mobile-patent-suits-graphic-of-the-day/
-
-				
+			});
 		</script>
     </body>
 </html>
