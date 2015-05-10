@@ -1,6 +1,6 @@
 <?php
 set_time_limit(600000);
-$link = mysql_connect('140.112.233.123', 'root', 'lapy110');
+$link = mysql_connect('127.0.0.1', 'websysS15GB4', 'websysS15GB4!!');
 mysql_query("SET NAMES utf8");
 mysql_select_db("finance_ms",$link);
 
@@ -17,7 +17,8 @@ $num_articles = mysql_num_rows($result);
 $news_articles = array();
 for ($i=0; $i<$num_articles; $i++) {
 	$row = mysql_fetch_array($result);
-	$news_articles[$i] = array($row['TITLE'],strip_tags($row['CONTENT']));
+	$ymd = date_parse($row['DATE']);
+	$news_articles[$i] = array($row['TITLE'],strip_tags($row['CONTENT']),$ymd['year'],$ymd['month']-1,$ymd['day']);
 }
 
 echo json_encode($news_articles);

@@ -53,11 +53,7 @@
 				if(window.innerWidth!=change)
 					location.reload();
 			};
-			/*if(change==1)
-			{
-					change=-1;
-					location.reload();
-			}*/
+
 			google.load("visualization", "1", {packages:["corechart"]});
       		google.load('visualization', '1', {'packages':['motionchart']});
       		google.setOnLoadCallback(drawCharts);
@@ -76,7 +72,7 @@
 				drawChartPie();
 			}
 			
-			function drawChartSI(  ) 
+			function drawChartSI() 
 			{
 				$.ajax(
 					{
@@ -90,6 +86,9 @@
 							var dataD = google.visualization.arrayToDataTable(data[0]);
 							TICKER = data[2];
 							CompanyName = data[3];
+							
+							// Place company name and ticker on left side bar
+							$("#company_label").html(CompanyName+" (" + TICKER + ")");
 
 							var options = {
 								title: 'Correlation',
@@ -202,8 +201,7 @@
                             <img src="img/Apple-Logo.png" class="img-circle" alt="User Image" />
                         </div>
                         <div class="pull-left info">
-                            <p><script>document.write(CompanyName+"("+tick+")");</script></p>
-
+                            <p id="company_label"></p>
                             <a href="#"><i class="fa fa-circle text-success"></i>Market Close</a>
                         </div>
                     </div>
@@ -472,63 +470,10 @@
                                         Correlation Map
                                     </h3>
                                 </div>
-                                <div class="box-body no-padding">
+                                
+								<div class="box-body no-padding">
                                     <div id="chart_div3" style="height: 300px;"></div>
-                                    <div class="table-responsive">
-                                        <!-- .table - Uses sparkline charts-->
-									 <h3 class="box-title">
-                                        News By Country 
-                                    </h3>
-                                        <table class="table table-striped">
-                                            <tr>
-                                                <th>Country</th>
-                                                <th>Visitors</th>
-                                                <th>Online</th>
-                                                <th>Page Views</th>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">USA</a></td>
-                                                <td><div id="sparkline-1"></div></td>
-                                                <td>209</td>
-                                                <td>239</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">India</a></td>
-                                                <td><div id="sparkline-2"></div></td>
-                                                <td>131</td>
-                                                <td>958</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">Britain</a></td>
-                                                <td><div id="sparkline-3"></div></td>
-                                                <td>19</td>
-                                                <td>417</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">Brazil</a></td>
-                                                <td><div id="sparkline-4"></div></td>
-                                                <td>109</td>
-                                                <td>476</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">China</a></td>
-                                                <td><div id="sparkline-5"></div></td>
-                                                <td>192</td>
-                                                <td>437</td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="#">Australia</a></td>
-                                                <td><div id="sparkline-6"></div></td>
-                                                <td>1709</td>
-                                                <td>947</td>
-                                            </tr>
-                                        </table><!-- /.table -->
-                                    </div>
                                 </div><!-- /.box-body-->
-                                <div class="box-footer">
-                                    <button class="btn btn-info"><i class="fa fa-download"></i> Generate PDF</button>
-                                    <button class="btn btn-warning"><i class="fa fa-bug"></i> Report Bug</button>
-                                </div>
                             </div>
                         </section><!-- right col -->
                     </div><!-- /.row (main row) -->
