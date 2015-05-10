@@ -188,15 +188,6 @@
                         week: 'week',
                         day: 'day'
                     },
-                    //Random default events
-                    events: [
-                        {
-                            title: 'Short Event',
-                            start: new Date(2014, 0, 1),
-                            backgroundColor: "#f56954", //red 
-                            borderColor: "#f56954" //red
-                        }
-                    ],
                     editable: false,
                     droppable: false, // this allows things to be dropped onto the calendar !!!
                     drop: function(date, allDay) { // this function is called when something is dropped
@@ -305,7 +296,7 @@
 								"<div class=\"row\">"
 								+ "<div class=\"col-md-12\">"
 								+ 	"<div class=\"box box-solid box-success collapsed-box\">"
-								+		"<div class=\"box-header\">"
+								+		"<div class=\"box-header\" id=\"header"+i+"\">"
 								+			"<div class=\"box-tools pull-right\">"
 								+				"<button class=\"btn btn-success btn-sm\" data-widget=\"collapse\"><i class=\"fa fa-minus\"></i></button>"
 								+				"<button class=\"btn btn-success btn-sm\" data-widget=\"remove\"><i class=\"fa fa-times\"></i></button>"
@@ -326,7 +317,10 @@
 								title: ""+data[i][0],
 								allDay: true,
 								start: new Date(data[i][2],data[i][3],data[i][4]),
-								end: new Date(data[i][2],data[i][3],data[i][4])
+								end: new Date(data[i][2],data[i][3],data[i][4]),
+								backgroundColor: "#00a65a", //Success (green)
+								borderColor: "#00a65a", //Success (green)
+								url: "#header"+i
 							});
 						}
 						
