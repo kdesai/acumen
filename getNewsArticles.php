@@ -9,7 +9,11 @@ mysql_query("SET NAMES utf8");
 mysql_select_db("websysS15GB4",$link);
 
 // Grab post variables
-$ticker = $_GET['ticker'];
+$ticker = array_key_exists('ticker',$_GET)?$_GET['ticker']:"AAPL:US";
+if($ticker='null')
+	$ticker = "AAPL:US";
+
+//$ticker = $_GET['ticker'];
 $month  = $_GET['month'];
 $year   = $_GET['year'];
 
@@ -22,7 +26,7 @@ $news_articles = array();
 for ($i=0; $i<$num_articles; $i++) {
 	$row = mysql_fetch_array($result);
 	$ymd = date_parse($row['DATE']);
-	$news_articles[$i] = array($row['TITLE'],strip_tags($row['CONTENT']),$ymd['year'],$ymd['month']-1,$ymd['day']);
+	$news_articles[$i] = array($row['TITLE'],strip_tags($row['CONTENT']),$ymd['year'],$ymd['month']-1,$ymd['day'],is_null($row['IMPORTANCE'])?1:$row['IMPORTANCE']);
 }
 
 echo json_encode($news_articles);
