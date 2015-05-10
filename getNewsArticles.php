@@ -1,8 +1,12 @@
 <?php
+
+//header("Access-Control-Allow-Origin: *");
+//echo "hello cross domain.";
+
 set_time_limit(600000);
 $link = mysql_connect('127.0.0.1', 'websysS15GB4', 'websysS15GB4!!');
 mysql_query("SET NAMES utf8");
-mysql_select_db("finance_ms",$link);
+mysql_select_db("websysS15GB4",$link);
 
 // Grab post variables
 $ticker = $_GET['ticker'];
