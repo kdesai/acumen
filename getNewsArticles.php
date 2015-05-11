@@ -26,7 +26,7 @@ $news_articles = array();
 for ($i=0; $i<$num_articles; $i++) {
 	$row = mysql_fetch_array($result);
 	$ymd = date_parse($row['DATE']);
-	$news_articles[$i] = array($row['TITLE'],strip_tags($row['CONTENT']),$ymd['year'],$ymd['month']-1,$ymd['day'],is_null($row['IMPORTANCE'])?1:$row['IMPORTANCE']);
+	$news_articles[$i] = array($row['TITLE'],strip_tags($row['CONTENT']),$ymd['year'],$ymd['month']-1,$ymd['day'],is_null($row['IMPORTANCE'])?1:$row['IMPORTANCE'],$row['hour']);
 }
 
 echo json_encode($news_articles);
