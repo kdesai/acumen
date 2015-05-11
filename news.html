@@ -273,8 +273,8 @@
 				var moment = $("#calendar").fullCalendar('getDate');
 		
 				t = $("#ticker_input").val();
-				if (t == null){t = $.urlParam("TICKER");}
-				if (t == ""){alert("No ticker specified! Please specify ticker symbol and try again."); return;}
+				if (t == null || t == ""){t = $.urlParam("TICKER");}
+				if (t == null || t == ""){alert("No ticker specified! Please specify ticker symbol and try again."); return;}
 				$("#company_label").html(t);
 				
 				$("#dashboard_anchor").attr("href", "index.html?TICKER="+t);
