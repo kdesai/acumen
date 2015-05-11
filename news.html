@@ -126,9 +126,9 @@
         <!-- AdminLTE App -->
         <script src="js/AdminLTE/app.js" type="text/javascript"></script>
 		<!-- Moments -->
-		<script src='js/plugins/fullcalendar/moment.js'></script>
+		<script src='js/plugins/fullCalendar/moment.js'></script>
 		<!-- fullCalendar -->
-        <script src="js/plugins/fullcalendar/fullcalendar.js" type="text/javascript"></script>
+        <script src="js/plugins/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
 		<!-- Responsive Voice -->
 		<script src="js/responsiveVoice.js" type="text/javascript"></script>
 		<!-- Page specific script -->
@@ -143,7 +143,7 @@
 				   return results[1] || 0;
 				}
 			}
-		
+			
             $(document).ready(function() {
 
                 /* initialize the external events
@@ -174,11 +174,6 @@
 
                 /* initialize the calendar
                  -----------------------------------------------------------------*/
-                //Date for the calendar events (dummy data)
-                var date = new Date();
-                var d = date.getDate(),
-                        m = date.getMonth(),
-                        y = date.getFullYear();
                 $('#calendar').fullCalendar({
                     header: {
                         left: 'prev,next today',
@@ -193,6 +188,9 @@
                         week: 'week',
                         day: 'day'
                     },
+					year: 2014,
+					month: 0,
+					date: 1,
                     editable: false,
                     droppable: false, // this allows things to be dropped onto the calendar !!!
                     drop: function(date, allDay) { // this function is called when something is dropped
@@ -219,7 +217,11 @@
                             $(this).remove();
                         }
 
-                    }
+                    },
+					eventClick: function(calEvent, jsEvent, view) {
+						location.hash = "#article"+calEvent.id;
+						$("#button"+calEvent.id).click();
+					}
                 });
 
                 /* ADDING EVENTS */
@@ -302,9 +304,9 @@
 								"<div class=\"row\">"
 								+ "<div class=\"col-md-12\">"
 								+ 	"<div class=\"box box-solid box-success collapsed-box\">"
-								+		"<div class=\"box-header\" id=\"header"+i+"\">"
+								+		"<div class=\"box-header\" id=\"article"+i+"\">"
 								+			"<div class=\"box-tools pull-right\">"
-								+				"<button class=\"btn btn-success btn-sm\" data-widget=\"collapse\"><i class=\"fa fa-minus\"></i></button>"
+								+				"<button id=\"button"+i+"\" class=\"btn btn-success btn-sm\" data-widget=\"collapse\"><i class=\"fa fa-minus\"></i></button>"
 								+				"<button class=\"btn btn-success btn-sm\" data-widget=\"remove\"><i class=\"fa fa-times\"></i></button>"
 								+			"</div>"
 								+			"<h3 class=\"box-title pull-left\">" + data[i][0] + "</h3>"
@@ -320,17 +322,20 @@
 							);
 							
 							myEvents.events.push({
+								id: i,
 								title: ""+data[i][0],
 								allDay: true,
 								start: new Date(data[i][2],data[i][3],data[i][4]),
 								end: new Date(data[i][2],data[i][3],data[i][4]),
 								//backgroundColor: "#00a65a", //Success (green)
+                                backgroundColor : colormap_w[Math.floor(30* ( 2 * sigmoid(parseInt(data[i][5])/100)-1 )  )],
                                 backgroundColor : colormap_w[Math.floor(30* ( 2 * sigmoid(parseInt(data[i][5])/100)-1 )  )] ,
 								borderColor: "#00a65a", //Success (green)
-								url: "#header"+i
+								//url: "#article"+i
 							});
                             //console.log(RainBowColor(Math.floor(255*sigmoid(parseInt(data[i][5]))), 255));
                             //console.log( Math.floor( 255 * sigmoid( parseInt( data[i][5] ) )  ));
+                            //alert(parseInt(data[i][5]));
                              //alert(parseInt(data[i][5]));
 						}
 
