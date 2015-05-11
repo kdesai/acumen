@@ -321,15 +321,17 @@
 								+"</div>"
 							);
 							
+                            				var st = new Date(data[i][2],data[i][3],data[i][4],data[i][6],0,0);
+                            				var et = new Date(data[i][2],data[i][3],data[i][4],data[i][6]+1,0,0);
 							myEvents.events.push({
 								id: i,
 								title: ""+data[i][0],
-								allDay: true,
-								start: new Date(data[i][2],data[i][3],data[i][4]),
-								end: new Date(data[i][2],data[i][3],data[i][4]),
+								allDay: false,
+								start: st.toISOString(), 
+								end: et.toISOString(),
 								//backgroundColor: "#00a65a", //Success (green)
-                                backgroundColor : colormap_w[Math.floor(30* ( 2 * sigmoid(parseInt(data[i][5])/100)-1 )  )],
-                                backgroundColor : colormap_w[Math.floor(30* ( 2 * sigmoid(parseInt(data[i][5])/100)-1 )  )] ,
+                                				backgroundColor : colormap_w[Math.floor(30* ( 2 * sigmoid(parseInt(data[i][5])/100)-1 )  )],
+
 								borderColor: "#00a65a", //Success (green)
 								//url: "#article"+i
 							});
