@@ -10,8 +10,8 @@ mysql_select_db("websysS15GB4",$link);
 
 // Grab post variables
 $ticker = array_key_exists('ticker',$_GET)?$_GET['ticker']:"AAPL:US";
-if($ticker='null')
-	$ticker = "AAPL:US";
+//if($ticker='null')
+//	$ticker = "AAPL:US";
 
 //$ticker = $_GET['ticker'];
 $month  = $_GET['month'];

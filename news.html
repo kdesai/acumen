@@ -273,7 +273,8 @@
 				var moment = $("#calendar").fullCalendar('getDate');
 		
 				t = $("#ticker_input").val();
-				if (t == ""){t = $.urlParam("TICKER");}
+				if (t == null){t = $.urlParam("TICKER");}
+				if (t == ""){alert("No ticker specified! Please specify ticker symbol and try again."); return;}
 				$("#company_label").html(t);
 				
 				$("#dashboard_anchor").attr("href", "index.html?TICKER="+t);
@@ -287,7 +288,6 @@
 				}
 				
 				y = moment.getFullYear();
-				//alert(t+m+y);
 				$.ajax({
 					url: "http://websys3.stern.nyu.edu/websysS15GB/websysS15GB4/AdminLTE/getNewsArticles.php",
 					type: "GET",
