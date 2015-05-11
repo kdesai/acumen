@@ -227,6 +227,11 @@
 								<i class="fa fa-tasks"></i> <span>News</span>
 							</a>
 						</li>
+                        <li >
+                            <a href="about_us.html">
+                                <i class="fa fa-group"></i> <span>About Us</span>
+                            </a>
+                        </li>
 				    </ul>
                 </section>
                 <!-- /.sidebar -->
@@ -582,11 +587,13 @@
 						.attr("y", -10)
 						.text(function(d) { return d.name; });
 
+					var Major_node = svg.selectAll(".node#"+TICKER.replace(":",'\\\:')+" circle");
 					Major_node.attr('r',22).style('fill','#39DF3B');
 
 
 					for(i=1;i<=9;i++)
 					{
+						var Major_node = svg.selectAll(".node#"+RELATED_TICKERS[i].replace(":",'\\\\:')+" circle");
 						Major_node.attr('r',10).style('fill','#ff33cc');
 					}
 					
@@ -620,7 +627,6 @@
 
 						for(i=1;i<=9;i++)
 						{
-							var Major_node = svg.selectAll(".node#"+RELATED_TICKERS[$i].replace(":","\\\:")+' circle');
 							var Major_node = svg.selectAll(".node#"+RELATED_TICKERS[i].replace(":",'\\\\:')+' circle');
 							Major_node.attr('r',10).style('fill','#ff33cc');
 							//echo $query;
