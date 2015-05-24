@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>AdminLTE | Dashboard</title>
+        <title>Acumen | News</title>
         <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
         <!-- bootstrap 3.0.2 -->
         <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -321,8 +321,8 @@
 								+"</div>"
 							);
 							
-                            				var st = new Date(data[i][2],data[i][3],data[i][4],data[i][6],0,0);
-                            				var et = new Date(data[i][2],data[i][3],data[i][4],data[i][6]+1,0,0);
+                            var st = new Date(data[i][2],data[i][3],data[i][4],data[i][6],0,0);
+                            var et = new Date(data[i][2],data[i][3],data[i][4],data[i][6]+1,0,0);
 							myEvents.events.push({
 								id: i,
 								title: ""+data[i][0],
@@ -330,14 +330,14 @@
 								start: st.toISOString(), 
 								end: et.toISOString(),
 								//backgroundColor: "#00a65a", //Success (green)
-                                				backgroundColor : colormap_w[Math.floor(30* ( 2 * sigmoid(parseInt(data[i][5])/100)-1 )  )],
+                                backgroundColor : colormap_w[Math.floor(30* ( 2 * sigmoid(parseInt(data[i][5])/100)-1 )  )],
 
 								borderColor: "#00a65a", //Success (green)
 								//url: "#article"+i
 							});
                             //console.log(RainBowColor(Math.floor(255*sigmoid(parseInt(data[i][5]))), 255));
                             //console.log( Math.floor( 255 * sigmoid( parseInt( data[i][5] ) )  ));
-                            //alert(parseInt(data[i][5]));
+                            //alert(parseInt(data[i][6]));
                              //alert(parseInt(data[i][5]));
 						}
 

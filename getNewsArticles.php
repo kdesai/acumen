@@ -1,8 +1,5 @@
 <?php
 
-//header("Access-Control-Allow-Origin: *");
-//echo "hello cross domain.";
-
 set_time_limit(600000);
 $link = mysql_connect('127.0.0.1', 'websysS15GB4', 'websysS15GB4!!');
 mysql_query("SET NAMES utf8");
@@ -10,10 +7,10 @@ mysql_select_db("websysS15GB4",$link);
 
 // Grab post variables
 $ticker = array_key_exists('ticker',$_GET)?$_GET['ticker']:"AAPL:US";
-//if($ticker='null')
-//	$ticker = "AAPL:US";
+if (strpos($ticker,':US') === false) {
+	$ticker = $ticker . ":US";
+}
 
-//$ticker = $_GET['ticker'];
 $month  = $_GET['month'];
 $year   = $_GET['year'];
 
